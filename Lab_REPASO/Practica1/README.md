@@ -1,62 +1,156 @@
-package com.ufide.tiendaapp.service;
+# TiendaApp — Resumen Clases 1 a 4
 
-import java.util.List;
-import java.util.Optional;
+App Spring Boot completa de **inventario de productos** que integra todo lo visto en las primeras 4 clases del curso SC-403.
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+## ✅ Tecnologías integradas
 
-import com.ufide.tiendaapp.entity.Producto;
-import com.ufide.tiendaapp.repository.ProductoRepository;
+| Clase | Tema | Implementación |
+|---|---|---|
+| 1 | Git y GitHub | `.gitignore`, commits convencionales, branches por feature |
+| 2 | Spring Boot + MVC + HTTP | Controllers con `@GetMapping`, `Model`, vistas Thymeleaf |
+| 3 | Thymeleaf + Bootstrap 5 | Fragments reutilizables, grid responsive, `th:each` |
+| 4 | MySQL + JPA + Hibernate | Entity, Repository, Service, MVC completo, DI con `@Autowired` |
 
-/**
- * Capa de logica de negocio.
- *
- * Coordina las operaciones sobre Producto.
- * El Controller llama a este Service, NUNCA al Repository directamente.
- */
-@Service
-public class ProductoService {
+## 🗂️ Estructura
 
-    @Autowired
-    private ProductoRepository repo;
+```
+tiendaapp/
+├── pom.xml                                  ← deps: web, thymeleaf, jpa, mysql
+├── seed-data.sql                            ← 10 productos de ejemplo
+├── postman-collection.json                  ← peticiones para testear
+├── README.md                                ← este archivo
+├── .gitignore
+└── src/main/
+    ├── java/com/ufide/tiendaapp/
+    │   ├── TiendaappApplication.java        ← main (root)
+    │   ├── controller/                       Capa Controller
+    │   │   ├── HomeController.java
+    │   │   └── ProductoController.java
+    │   ├── entity/                           Capa Entity
+    │   │   └── Producto.java
+    │   ├── repository/                       Capa Repository
+    │   │   └── ProductoRepository.java
+    │   └── service/                          Capa Service
+    │       └── ProductoService.java
+    └── resources/
+        ├── application.properties           ← config + vars de entorno
+        ├── static/css/styles.css
+        └── templates/
+            ├── home.html
+            ├── productos.html               ← grid responsive con filtros
+            ├── producto.html                ← detalle con breadcrumb
+            └── fragments/header.html        ← navbar + footer
+```
 
-    public List<Producto> listar() {
-        return repo.findAll();
-    }
+## 🚀 Cómo correr
 
-    public Optional<Producto> buscarPorId(Long id) {
-        return repo.findById(id);
-    }
+### 1. Tener MySQL corriendo
 
-    public List<Producto> buscarPorCategoria(String categoria) {
-        return repo.findByCategoria(categoria);
-    }
+Crear la base de datos en Workbench:
+```sql
+CREATE DATABASE tiendadb CHARACTER SET utf8mb4;
+```
 
-    public List<Producto> buscarPorNombre(String nombre) {
-        return repo.findByNombreContainingIgnoreCase(nombre);
-    }
+### 2. Configurar las credenciales
 
-    public List<Producto> bajoStock() {
-        return repo.findByStockLessThan(5);
-    }
+Por defecto la app usa:
+- URL: `jdbc:mysql://localhost:3306/tiendadb`
+- Usuario: `root`
+- Password: `cambiame_local`
 
-    public Producto guardar(Producto p) {
-        // Aqui podrian ir validaciones de negocio antes de persistir
-        if (p.getPrecio() < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo");
-        }
-        if (p.getStock() < 0) {
-            throw new IllegalArgumentException("El stock no puede ser negativo");
-        }
-        return repo.save(p);
-    }
+Para usar TUS credenciales sin modificar el `application.properties`, definí variables de entorno:
 
-    public void eliminar(Long id) {
-        repo.deleteById(id);
-    }
+**Windows (PowerShell, solo esa sesión):**
+```powershell
+$env:DB_PASSWORD = "tupassword"
+.\mvnw.cmd spring-boot:run
+```
 
-    public long total() {
-        return repo.count();
-    }
-}
+**Windows (CMD):**
+```cmd
+set DB_PASSWORD=tupassword
+mvnw.cmd spring-boot:run
+```
+
+**Linux/Mac:**
+```bash
+export DB_PASSWORD=tupassword
+./mvnw spring-boot:run
+```
+
+### 3. Arrancar la app
+
+```bash
+mvnw.cmd spring-boot:run        # Windows
+./mvnw spring-boot:run          # Linux/Mac
+```
+
+O desde VS Code: clic derecho en `TiendaappApplication.java` → Run.
+
+### 4. Cargar los productos de ejemplo
+
+En MySQL Workbench:
+- **File → Open SQL Script** → seleccionar `seed-data.sql` → Execute (rayo).
+
+### 5. Abrir el navegador
+
+- `http://localhost:8080` — Página inicial con stats
+- `http://localhost:8080/productos` — Listado
+- `http://localhost:8080/productos/1` — Detalle
+- `http://localhost:8080/productos?buscar=laptop` — Búsqueda
+- `http://localhost:8080/productos/bajo-stock` — Filtro
+
+## 🧪 Testing con Postman
+
+1. Abrir Postman → File → Import → `postman-collection.json`.
+2. Ejecutar las peticiones de la colección.
+3. Verificar: status codes, body HTML, tiempos.
+
+## 🌳 Workflow Git sugerido
+
+Este proyecto se desarrolló con un workflow de branches:
+
+```bash
+# branches por feature
+git checkout -b feature/setup-mysql
+# ... cambios ...
+git add .
+git commit -m "feat: configurar conexion MySQL con variables de entorno"
+git checkout main
+git merge --no-ff feature/setup-mysql
+
+git checkout -b feature/entity-producto
+# ... cambios ...
+git commit -m "feat: agregar Entity Producto con anotaciones JPA"
+
+git checkout -b feature/repository-service
+git commit -m "feat: agregar ProductoRepository y ProductoService"
+
+git checkout -b feature/views-bootstrap
+git commit -m "feat: implementar vistas con Bootstrap y fragments"
+
+# tag de release
+git tag -a v1.0 -m "Resumen Clases 1 a 4 completo"
+git push origin main --tags
+```
+
+Ver el laboratorio paso a paso para el detalle del flujo.
+
+## 🔗 Recursos
+
+- **Spring Boot Docs:** https://docs.spring.io/spring-boot/reference/
+- **Spring Data JPA:** https://docs.spring.io/spring-data/jpa/reference/
+- **Thymeleaf:** https://www.thymeleaf.org/documentation.html
+- **Bootstrap 5:** https://getbootstrap.com/docs/5.3
+- **MySQL Workbench:** https://dev.mysql.com/downloads/workbench/
+
+## 🆘 Problemas comunes
+
+| Síntoma | Solución |
+|---|---|
+| `Access denied for user 'root'` | Verificar `DB_PASSWORD` o el default en `application.properties`. |
+| `Unknown database 'tiendadb'` | `CREATE DATABASE tiendadb;` en Workbench. |
+| `Table 'productos' doesn't exist` | Hibernate la crea al arrancar. Si falla, verificar `ddl-auto=update`. |
+| Página `/productos` vacía | Ejecutar `seed-data.sql` en Workbench. |
+| Cambios en HTML no se ven | `spring.thymeleaf.cache=false` ya está activo. Refrescar el navegador. |
+| Puerto 8080 en uso | Cambiar `server.port=8081` o matar el proceso anterior. |
