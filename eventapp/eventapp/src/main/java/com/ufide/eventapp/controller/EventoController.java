@@ -58,6 +58,41 @@ public class EventoController {
         return "redirect:/eventos";
     }
 
+    @GetMapping("/{id}/editar")
+    public String editar(@PathVariable Long id, Model model) {
+        Evento evento = service.buscarPorId(id).orElse(null);
+
+        if (evento == null) {
+            return "redirect:/eventos";
+        }
+
+        model.addAttribute("evento", evento);
+        prepararFormulario(model, "Editar evento", "Actualizar");
+        return "eventos/form";
+    }
+
+    @PostMapping("/{id}")
+    public String actualizar(@PathVariable Long id,
+                             @Valid @ModelAttribute("evento") Evento evento,
+                             BindingResult result,
+                             Model model) {
+        evento.setId(id);
+
+        if (result.hasErrors()) {
+            prepararFormulario(model, "Editar evento", "Actualizar");
+            return "eventos/form";
+        }
+
+        service.guardar(evento);
+        return "redirect:/eventos";
+    }
+
+    @PostMapping("/{id}/eliminar")
+    public String eliminar(@PathVariable Long id) {
+        service.eliminar(id);
+        return "redirect:/eventos";
+    }
+
     private void prepararFormulario(Model model, String titulo, String textoBoton) {
         model.addAttribute("titulo", titulo);
         model.addAttribute("textoBoton", textoBoton);
