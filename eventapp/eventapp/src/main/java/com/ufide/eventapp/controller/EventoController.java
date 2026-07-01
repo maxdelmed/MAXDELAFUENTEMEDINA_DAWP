@@ -31,6 +31,13 @@ public class EventoController {
         return "eventos";
     }
 
+    @GetMapping("/categoria/{categoria}")
+    public String filtrarPorCategoria(@PathVariable String categoria, Model model) {
+        model.addAttribute("eventos", service.buscarPorCategoria(categoria));
+        model.addAttribute("filtro", "Categoria: " + categoria);
+        return "eventos";
+    }
+
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id, Model model) {
         Evento evento = service.buscarPorId(id).orElse(null);
