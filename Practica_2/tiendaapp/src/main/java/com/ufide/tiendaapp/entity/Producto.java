@@ -11,6 +11,16 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Entidad Producto - representa la tabla productos en MySQL.
+ *
+ * Anotaciones JPA:
+ *   @Entity        -> marca la clase como tabla
+ *   @Table         -> nombre custom de la tabla
+ *   @Id            -> llave primaria
+ *   @GeneratedValue -> auto-incremento
+ *   @Column        -> configuracion de la columna
+ */
 @Entity
 @Table(name = "productos")
 public class Producto {
@@ -40,6 +50,7 @@ public class Producto {
     @Column(length = 50)
     private String categoria;
 
+    /** Constructor vacio - obligatorio para JPA. */
     public Producto() {}
 
     public Producto(String nombre, String descripcion, double precio, int stock, String categoria) {
@@ -49,6 +60,8 @@ public class Producto {
         this.stock = stock;
         this.categoria = categoria;
     }
+
+    // Getters y setters
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -68,6 +81,13 @@ public class Producto {
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public boolean isBajoStock() { return stock > 0 && stock < 5; }
-    public boolean isAgotado() { return stock == 0; }
+    /** Util: marca si hay poco stock. */
+    public boolean isBajoStock() {
+        return stock > 0 && stock < 5;
+    }
+
+    /** Util: marca si esta agotado. */
+    public boolean isAgotado() {
+        return stock == 0;
+    }
 }

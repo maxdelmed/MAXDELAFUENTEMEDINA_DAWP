@@ -17,6 +17,12 @@ import com.ufide.tiendaapp.service.ProductoService;
 
 import jakarta.validation.Valid;
 
+/**
+ * Controlador de productos.
+ *
+ * Recibe peticiones HTTP, llama al ProductoService y devuelve la vista.
+ * Cero logica de negocio aqui - solo orquesta.
+ */
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
@@ -24,7 +30,7 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    /** GET /productos - listar todos o buscar */
+    /** GET /productos - listar todos o buscar por nombre/categoria */
     @GetMapping
     public String listar(Model modelo,
             @RequestParam(required = false) String buscar,
@@ -42,14 +48,14 @@ public class ProductoController {
         return "productos";
     }
 
-    /** GET /productos/{id} - detalle */
+    /** GET /productos/{id} - ver detalle de un producto */
     @GetMapping("/{id}")
     public String detalle(Model modelo, @PathVariable Long id) {
         modelo.addAttribute("producto", productoService.buscarPorId(id).orElse(null));
         return "producto";
     }
 
-    /** GET /productos/bajo-stock */
+    /** GET /productos/bajo-stock - productos con menos de 5 unidades */
     @GetMapping("/bajo-stock")
     public String bajoStock(Model modelo) {
         modelo.addAttribute("productos", productoService.bajoStock());
@@ -57,44 +63,49 @@ public class ProductoController {
         return "productos";
     }
 
-    /** GET /productos/nuevo - mostrar formulario de creacion */
+    /** GET /productos/nuevo - formulario para crear */
     @GetMapping("/nuevo")
-    public String mostrarFormNuevo(Model m) {
-        m.addAttribute("producto", new Producto());
+    public String mostrarFormNuevo(Model modelo) {
+        modelo.addAttribute("producto", new Producto());
         return "productos/form";
     }
 
-    /** POST /productos - guardar nuevo producto */
+    /** POST /productos - guardar producto */
     @PostMapping
     public String guardar(@Valid @ModelAttribute("producto") Producto producto,
-                          BindingResult result,
-                          RedirectAttributes ra) {
+            BindingResult result,
+            RedirectAttributes ra) {
+
         if (result.hasErrors()) {
             return "productos/form";
         }
+
         productoService.guardar(producto);
         ra.addFlashAttribute("ok", "Producto guardado correctamente");
         return "redirect:/productos";
     }
 
-    /** GET /productos/{id}/editar - mostrar formulario de edicion */
+    /** GET /productos/{id}/editar - formulario para editar */
     @GetMapping("/{id}/editar")
-    public String mostrarFormEditar(@PathVariable Long id, Model m) {
-        Producto p = productoService.buscarPorId(id)
-            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-        m.addAttribute("producto", p);
+    public String mostrarFormEditar(@PathVariable Long id, Model modelo) {
+        Producto producto = productoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+        modelo.addAttribute("producto", producto);
         return "productos/form";
     }
 
-    /** POST /productos/{id} - actualizar producto existente */
+    /** POST /productos/{id} - actualizar producto */
     @PostMapping("/{id}")
     public String actualizar(@PathVariable Long id,
-                             @Valid @ModelAttribute("producto") Producto producto,
-                             BindingResult result,
-                             RedirectAttributes ra) {
+            @Valid @ModelAttribute("producto") Producto producto,
+            BindingResult result,
+            RedirectAttributes ra) {
+
         if (result.hasErrors()) {
             return "productos/form";
         }
+
         producto.setId(id);
         productoService.guardar(producto);
         ra.addFlashAttribute("ok", "Producto actualizado correctamente");
