@@ -3,27 +3,20 @@ package com.ufide.eventapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ufide.eventapp.entity.Evento;
 import com.ufide.eventapp.service.EventoService;
 
+import jakarta.validation.Valid;
+
 /**
- * Controlador de eventos - estado base del Caso Practico 1.
- *
- * Endpoints ya implementados:
- *   GET /eventos          -> listar todos
- *   GET /eventos/{id}     -> detalle
- *
- * Endpoints que tenes que implementar (Caso Practico):
- *   GET  /eventos/categoria/{categoria}   -> filtrar por categoria (endpoint paramétrico)
- *   GET  /eventos/nuevo                   -> mostrar form vacio
- *   POST /eventos                         -> guardar nuevo con validaciones
- *   GET  /eventos/{id}/editar             -> mostrar form precargado
- *   POST /eventos/{id}                    -> actualizar
- *   POST /eventos/{id}/eliminar           -> borrar
+ * Controlador de eventos.
  */
 @Controller
 @RequestMapping("/eventos")
@@ -45,5 +38,28 @@ public class EventoController {
         return "evento";
     }
 
-    // TODO Caso Practico 1: agregar aca los endpoints del CRUD y el GET con parametro.
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("evento", new Evento());
+        prepararFormulario(model, "Nuevo evento", "Guardar");
+        return "eventos/form";
+    }
+
+    @PostMapping
+    public String guardar(@Valid @ModelAttribute("evento") Evento evento,
+                          BindingResult result,
+                          Model model) {
+        if (result.hasErrors()) {
+            prepararFormulario(model, "Nuevo evento", "Guardar");
+            return "eventos/form";
+        }
+
+        service.guardar(evento);
+        return "redirect:/eventos";
+    }
+
+    private void prepararFormulario(Model model, String titulo, String textoBoton) {
+        model.addAttribute("titulo", titulo);
+        model.addAttribute("textoBoton", textoBoton);
+    }
 }
