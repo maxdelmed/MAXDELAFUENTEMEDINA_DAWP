@@ -15,9 +15,6 @@ import com.ufide.eventapp.service.EventoService;
 
 import jakarta.validation.Valid;
 
-/**
- * Controlador de eventos.
- */
 @Controller
 @RequestMapping("/eventos")
 public class EventoController {
@@ -48,7 +45,7 @@ public class EventoController {
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
         model.addAttribute("evento", new Evento());
-        prepararFormulario(model, "Nuevo evento", "Guardar");
+        cargarForm(model, "Nuevo evento", "Guardar");
         return "eventos/form";
     }
 
@@ -57,7 +54,7 @@ public class EventoController {
                           BindingResult result,
                           Model model) {
         if (result.hasErrors()) {
-            prepararFormulario(model, "Nuevo evento", "Guardar");
+            cargarForm(model, "Nuevo evento", "Guardar");
             return "eventos/form";
         }
 
@@ -74,7 +71,7 @@ public class EventoController {
         }
 
         model.addAttribute("evento", evento);
-        prepararFormulario(model, "Editar evento", "Actualizar");
+        cargarForm(model, "Editar evento", "Actualizar");
         return "eventos/form";
     }
 
@@ -86,7 +83,7 @@ public class EventoController {
         evento.setId(id);
 
         if (result.hasErrors()) {
-            prepararFormulario(model, "Editar evento", "Actualizar");
+            cargarForm(model, "Editar evento", "Actualizar");
             return "eventos/form";
         }
 
@@ -100,8 +97,8 @@ public class EventoController {
         return "redirect:/eventos";
     }
 
-    private void prepararFormulario(Model model, String titulo, String textoBoton) {
+    private void cargarForm(Model model, String titulo, String boton) {
         model.addAttribute("titulo", titulo);
-        model.addAttribute("textoBoton", textoBoton);
+        model.addAttribute("textoBoton", boton);
     }
 }
