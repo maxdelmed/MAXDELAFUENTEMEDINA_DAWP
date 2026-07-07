@@ -35,14 +35,14 @@
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input id="nombre" type="text" class="form-control" th:field="*{nombre}"
-                           th:errorclass="is-invalid" placeholder="Ej: Taller de Spring Boot">
+                           th:errorclass="is-invalid" placeholder="Nombre del evento">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="descripcion" class="form-label">Descripcion</label>
                     <textarea id="descripcion" class="form-control" rows="3" th:field="*{descripcion}"
-                              th:errorclass="is-invalid" placeholder="Descripcion corta del evento"></textarea>
+                              th:errorclass="is-invalid" placeholder="Descripcion"></textarea>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                 </div>
 
@@ -56,7 +56,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="categoria" class="form-label">Categoria</label>
                         <input id="categoria" type="text" class="form-control" th:field="*{categoria}"
-                               th:errorclass="is-invalid" placeholder="Ej: Taller">
+                               th:errorclass="is-invalid" placeholder="Categoria">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
                     </div>
                 </div>
@@ -65,14 +65,14 @@
                     <div class="col-md-6 mb-3">
                         <label for="lugar" class="form-label">Lugar</label>
                         <input id="lugar" type="text" class="form-control" th:field="*{lugar}"
-                               th:errorclass="is-invalid" placeholder="Ej: Aula 301">
+                               th:errorclass="is-invalid" placeholder="Lugar">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('lugar')}" th:errors="*{lugar}"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="organizador" class="form-label">Organizador</label>
                         <input id="organizador" type="text" class="form-control" th:field="*{organizador}"
-                               th:errorclass="is-invalid" placeholder="Ej: Universidad Fidelitas">
+                               th:errorclass="is-invalid" placeholder="Organizador">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('organizador')}" th:errors="*{organizador}"></div>
                     </div>
                 </div>

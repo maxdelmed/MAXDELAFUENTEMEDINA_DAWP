@@ -28,48 +28,48 @@ public class Evento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 120, message = "El nombre no puede pasar de 120 caracteres")
+    @NotBlank(message = "Digite el nombre")
+    @Size(max = 120, message = "Nombre muy largo")
     @Column(nullable = false, length = 120)
     private String nombre;
 
-    @Size(max = 500, message = "La descripcion no puede pasar de 500 caracteres")
+    @Size(max = 500, message = "Descripcion muy larga")
     @Column(length = 500)
     private String descripcion;
 
     /** Fecha del evento (sin hora). */
-    @NotNull(message = "La fecha es obligatoria")
-    @FutureOrPresent(message = "La fecha debe ser de hoy en adelante")
+    @NotNull(message = "Digite la fecha")
+    @FutureOrPresent(message = "La fecha no puede ser pasada")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate fecha;
 
-    @NotBlank(message = "El lugar es obligatorio")
-    @Size(max = 100, message = "El lugar no puede pasar de 100 caracteres")
+    @NotBlank(message = "Digite el lugar")
+    @Size(max = 100, message = "Lugar muy largo")
     @Column(length = 100)
     private String lugar;
 
     /** Categoria libre: "Musica", "Conferencia", "Deporte", "Taller", etc. */
-    @NotBlank(message = "La categoria es obligatoria")
-    @Size(max = 50, message = "La categoria no puede pasar de 50 caracteres")
+    @NotBlank(message = "Digite la categoria")
+    @Size(max = 50, message = "Categoria muy larga")
     @Column(length = 50)
     private String categoria;
 
-    @NotBlank(message = "El organizador es obligatorio")
-    @Size(max = 80, message = "El organizador no puede pasar de 80 caracteres")
+    @NotBlank(message = "Digite el organizador")
+    @Size(max = 80, message = "Organizador muy largo")
     @Column(length = 80)
     private String organizador;
 
     /** Cupo total disponible. */
-    @Min(value = 1, message = "El cupo maximo debe ser mayor a 0")
+    @Min(value = 1, message = "El cupo debe ser mayor a 0")
     private int cupoMaximo;
 
     /** Tickets ya vendidos. */
-    @PositiveOrZero(message = "Los cupos vendidos no pueden ser negativos")
+    @PositiveOrZero(message = "No puede ser negativo")
     private int cuposVendidos;
 
     /** Precio de la entrada (0 si es gratis). */
-    @PositiveOrZero(message = "El precio no puede ser negativo")
+    @PositiveOrZero(message = "No puede ser negativo")
     private double precio;
 
     public Evento() {}
