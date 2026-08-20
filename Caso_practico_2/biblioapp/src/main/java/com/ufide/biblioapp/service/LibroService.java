@@ -39,4 +39,17 @@ public class LibroService {
     //
     // (y el equivalente para devolver una copia)
     // ==========================================================
+    public void eliminar(Long id) {
+        libroRepository.deleteById(id);
+    }
+
+    public void descontarCopia(Libro libro) {
+        libro.setCopiasDisponibles(libro.getCopiasDisponibles() - 1);
+        libroRepository.save(libro);
+    }
+
+    public void devolverCopia(Libro libro) {
+        libro.setCopiasDisponibles(libro.getCopiasDisponibles() + 1);
+        libroRepository.save(libro);
+    }
 }
