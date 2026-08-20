@@ -18,7 +18,7 @@
     <description>Caso Practico 2 - SC-403 - Sistema de prestamos de biblioteca</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>21</java.version>
     </properties>
 
     <dependencies>
