@@ -2,11 +2,13 @@ package com.ufide.biblioapp.controller;
 
 import com.ufide.biblioapp.entity.Libro;
 import com.ufide.biblioapp.service.LibroService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class LibroController {
@@ -33,4 +35,44 @@ public class LibroController {
     // prestamos y devoluciones, protegidas con @PreAuthorize
     // segun el Requisito 3.
     // ==========================================================
+    @PreAuthorize("hasRole(T(com.ufide.biblioapp.enums.Rol).BIBLIOTECARIO.name())")
+    @GetMapping("/libros/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("libro", new Libro());
+        return "libro-form";
+    }
+
+    @PreAuthorize("hasRole(T(com.ufide.biblioapp.enums.Rol).BIBLIOTECARIO.name())")
+    @GetMapping("/libros/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        Libro libro = libroService.buscarPorId(id).orElse(null);
+        if (libro == null) {
+            return "redirect:/libros";
+        }
+        model.addAttribute("libro", libro);
+        return "libro-form";
+    }
+
+    @PreAuthorize("hasRole(T(com.ufide.biblioapp.enums.Rol).BIBLIOTECARIO.name())")
+    @PostMapping("/libros/guardar")
+    public String guardar(@Valid @ModelAttribute Libro libro, BindingResult result) {
+        if (result.hasErrors()) {
+            return "libro-form";
+        }
+
+        if (libro.getCopiasDisponibles() > libro.getCopiasTotales()) {
+            result.rejectValue("copiasDisponibles", "error.copias", "No puede haber mas copias disponibles que totales");
+            return "libro-form";
+        }
+
+        libroService.guardar(libro);
+        return "redirect:/libros";
+    }
+
+    @PreAuthorize("hasRole(T(com.ufide.biblioapp.enums.Rol).BIBLIOTECARIO.name())")
+    @PostMapping("/libros/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        libroService.eliminar(id);
+        return "redirect:/libros";
+    }
 }
