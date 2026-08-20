@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Libro')}"></head>
+<body>
+<div th:replace="~{fragments/header :: nav}"></div>
+<div class="container" style="max-width: 700px;">
+    <h2 th:text="${libro.id == null ? 'Nuevo libro' : 'Editar libro'}">Libro</h2>
+
+    <form th:action="@{/libros/guardar}" th:object="${libro}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label class="form-label">Titulo</label>
+            <input type="text" th:field="*{titulo}" class="form-control">
+            <div class="text-danger" th:errors="*{titulo}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Autor</label>
+            <input type="text" th:field="*{autor}" class="form-control">
+            <div class="text-danger" th:errors="*{autor}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">ISBN</label>
+            <input type="text" th:field="*{isbn}" class="form-control">
+            <div class="text-danger" th:errors="*{isbn}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Categoria</label>
+            <input type="text" th:field="*{categoria}" class="form-control">
+            <div class="text-danger" th:errors="*{categoria}"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Copias totales</label>
+                <input type="number" min="1" th:field="*{copiasTotales}" class="form-control">
+                <div class="text-danger" th:errors="*{copiasTotales}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Copias disponibles</label>
+                <input type="number" min="0" th:field="*{copiasDisponibles}" class="form-control">
+                <div class="text-danger" th:errors="*{copiasDisponibles}"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="/libros" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</body>
+</html>

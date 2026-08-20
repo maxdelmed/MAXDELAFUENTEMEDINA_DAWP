@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/header :: head('Detalle del libro')}"></head>
 <body>
 <div th:replace="~{fragments/header :: nav}"></div>
@@ -22,6 +22,8 @@
                  que lleve al formulario de registrar un prestamo.
                  ========================================================== -->
 
+            <a href="/prestamos/nuevo" class="btn btn-primary"
+               sec:authorize="hasRole('BIBLIOTECARIO')" th:if="${libro.copiasDisponibles > 0}">Registrar prestamo</a>
             <a href="/libros" class="btn btn-secondary">Volver al catalogo</a>
         </div>
     </div>

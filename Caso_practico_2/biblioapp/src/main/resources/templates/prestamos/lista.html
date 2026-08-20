@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('Prestamos')}"></head>
+<body>
+<div th:replace="~{fragments/header :: nav}"></div>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 th:text="${titulo}">Prestamos</h2>
+        <a href="/prestamos/nuevo" class="btn btn-primary" sec:authorize="hasRole('BIBLIOTECARIO')">Nuevo prestamo</a>
+    </div>
+
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>Libro</th>
+                <th>Usuario</th>
+                <th>Prestamo</th>
+                <th>Limite</th>
+                <th>Devolucion</th>
+                <th sec:authorize="hasRole('BIBLIOTECARIO')">Accion</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="prestamo : ${prestamos}">
+                <td th:text="${prestamo.libro.titulo}"></td>
+                <td th:text="${prestamo.usuario.nombreCompleto}"></td>
+                <td th:text="${prestamo.fechaPrestamo}"></td>
+                <td th:text="${prestamo.fechaLimite}"></td>
+                <td th:text="${prestamo.fechaDevolucion != null ? prestamo.fechaDevolucion : 'Pendiente'}"></td>
+                <td sec:authorize="hasRole('BIBLIOTECARIO')">
+                    <form th:if="${prestamo.fechaDevolucion == null}"
+                          th:action="@{'/prestamos/devolver/' + ${prestamo.id}}" method="post">
+                        <button class="btn btn-success btn-sm" type="submit">Marcar devolucion</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(prestamos)}">
+                <td colspan="6" class="text-center text-muted">No hay prestamos para mostrar.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
