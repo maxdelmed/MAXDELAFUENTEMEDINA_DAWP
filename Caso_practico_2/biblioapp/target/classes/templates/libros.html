@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/header :: head('Catalogo')}"></head>
 <body>
 <div th:replace="~{fragments/header :: nav}"></div>
 <div class="container">
-    <h1 class="mb-4">Catalogo de libros</h1>
-
     <!-- ==========================================================
          CASO PRACTICO 2 - BONUS chico (+2):
          Agregar un badge "Sin copias disponibles" cuando
          libro.copiasDisponibles == 0.
          ========================================================== -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Catalogo de libros</h1>
+        <a href="/libros/nuevo" class="btn btn-primary" sec:authorize="hasRole('BIBLIOTECARIO')">Nuevo libro</a>
+    </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" th:each="libro : ${libros}">
@@ -26,6 +28,12 @@
                         </span>
                     </p>
                     <a th:href="@{'/libros/' + ${libro.id}}" class="btn btn-outline-primary btn-sm">Ver detalle</a>
+                    <a th:href="@{'/libros/editar/' + ${libro.id}}" class="btn btn-outline-secondary btn-sm"
+                       sec:authorize="hasRole('BIBLIOTECARIO')">Editar</a>
+                    <form th:action="@{'/libros/eliminar/' + ${libro.id}}" method="post" class="d-inline"
+                          sec:authorize="hasRole('BIBLIOTECARIO')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                    </form>
                 </div>
             </div>
         </div>
